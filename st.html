@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>单片机原理与接口技术 - 在线刷题系统</title>
+    <title>单片机原理与接口技术 - 优化题库系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -19,26 +19,26 @@
             --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             --transition: all 0.3s ease;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
-
+        
         body {
             background: linear-gradient(135deg, #e0e7ff 0%, #d1e0fc 100%);
             color: var(--dark);
             min-height: 100vh;
             padding: 20px;
         }
-
+        
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
-
+        
         header {
             text-align: center;
             padding: 20px 0;
@@ -46,15 +46,16 @@
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
+            position: relative;
         }
-
+        
         h1 {
             font-size: 2.2rem;
             margin-bottom: 10px;
             color: var(--secondary);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
-
+        
         .subtitle {
             font-size: 1.1rem;
             color: var(--gray);
@@ -62,32 +63,44 @@
             margin: 0 auto;
             line-height: 1.6;
         }
-
+        
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 1.2fr 2fr 1.2fr;
             gap: 25px;
         }
-
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr 2fr;
+            }
+            .navigation-panel {
+                grid-column: span 2;
+            }
+        }
+        
         @media (max-width: 900px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
+            .navigation-panel {
+                grid-column: span 1;
+            }
         }
-
-        .stats-section, .quiz-section {
+        
+        .stats-section, .quiz-section, .navigation-panel {
             background: white;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
             padding: 25px;
             transition: var(--transition);
         }
-
-        .stats-section:hover, .quiz-section:hover {
+        
+        .stats-section:hover, .quiz-section:hover, .navigation-panel:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
-
+        
         .section-title {
             font-size: 1.4rem;
             margin-bottom: 20px;
@@ -98,18 +111,18 @@
             padding-bottom: 10px;
             border-bottom: 2px solid #f0f3ff;
         }
-
+        
         .section-title i {
             font-size: 1.6rem;
         }
-
+        
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-bottom: 25px;
         }
-
+        
         .stat-card {
             background: #f8f9ff;
             border-radius: var(--border-radius);
@@ -117,38 +130,43 @@
             text-align: center;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             border: 1px solid #e9ecef;
+            transition: transform 0.3s ease;
         }
-
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
         .stat-value {
             font-size: 1.8rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 5px;
         }
-
+        
         .stat-label {
             color: var(--gray);
             font-size: 0.95rem;
         }
-
+        
         .progress-container {
             margin: 20px 0;
         }
-
+        
         .progress-bar {
             height: 10px;
             background: #e9ecef;
             border-radius: 5px;
             overflow: hidden;
         }
-
+        
         .progress {
             height: 100%;
             background: linear-gradient(to right, var(--success), var(--primary));
             border-radius: 5px;
             transition: width 0.5s ease;
         }
-
+        
         .progress-text {
             display: flex;
             justify-content: space-between;
@@ -156,11 +174,11 @@
             font-size: 0.9rem;
             color: var(--gray);
         }
-
+        
         .question-container {
             margin-bottom: 30px;
         }
-
+        
         .question-header {
             background: linear-gradient(to right, var(--primary), #5a6ef0);
             color: white;
@@ -171,7 +189,7 @@
             align-items: center;
             font-size: 0.95rem;
         }
-
+        
         .question-text {
             font-size: 1.15rem;
             line-height: 1.7;
@@ -180,11 +198,11 @@
             border-radius: 0 0 var(--border-radius) var(--border-radius);
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
-
+        
         .options {
             margin-top: 20px;
         }
-
+        
         .option {
             display: block;
             padding: 15px;
@@ -197,33 +215,33 @@
             padding-left: 50px;
             font-size: 1rem;
         }
-
+        
         .option:hover {
             border-color: var(--primary);
             background: rgba(67, 97, 238, 0.05);
         }
-
+        
         .option.selected {
             border-color: var(--primary);
             background: rgba(67, 97, 238, 0.1);
         }
-
+        
         .option.correct {
             border-color: #38b000;
             background: rgba(56, 176, 0, 0.1);
         }
-
+        
         .option.incorrect {
             border-color: var(--danger);
             background: rgba(247, 37, 133, 0.1);
         }
-
+        
         .option input {
             position: absolute;
             opacity: 0;
             cursor: pointer;
         }
-
+        
         .checkmark {
             position: absolute;
             top: 50%;
@@ -236,16 +254,16 @@
             border-radius: 50%;
             transition: var(--transition);
         }
-
+        
         .option:hover .checkmark {
             border-color: var(--primary);
         }
-
+        
         .option.selected .checkmark {
             background-color: var(--primary);
             border-color: var(--primary);
         }
-
+        
         .option.selected .checkmark::after {
             content: "";
             position: absolute;
@@ -257,14 +275,14 @@
             border-radius: 50%;
             background: white;
         }
-
+        
         .fill-blank-container {
             margin-top: 15px;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-
+        
         .blank-input {
             padding: 12px 15px;
             border: 2px solid #e9ecef;
@@ -273,19 +291,19 @@
             width: 200px;
             transition: var(--transition);
         }
-
+        
         .blank-input:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
         }
-
+        
         .navigation {
             display: flex;
             justify-content: space-between;
             margin-top: 30px;
         }
-
+        
         .btn {
             display: inline-block;
             padding: 12px 25px;
@@ -300,25 +318,25 @@
             text-align: center;
             box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
         }
-
+        
         .btn:hover {
             background: var(--secondary);
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(67, 97, 238, 0.4);
         }
-
+        
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
             box-shadow: none;
         }
-
+        
         .btn-outline:hover {
             background: var(--primary);
             color: white;
         }
-
+        
         .explanation {
             background: #e7f5ff;
             border-left: 4px solid var(--primary);
@@ -328,11 +346,11 @@
             display: none;
             line-height: 1.6;
         }
-
+        
         .explanation.show {
             display: block;
         }
-
+        
         .tabs {
             display: flex;
             gap: 10px;
@@ -340,7 +358,7 @@
             border-bottom: 2px solid #f0f3ff;
             padding-bottom: 15px;
         }
-
+        
         .tab {
             padding: 10px 20px;
             background: #e9ecef;
@@ -349,18 +367,18 @@
             transition: var(--transition);
             font-size: 0.95rem;
         }
-
+        
         .tab.active {
             background: var(--primary);
             color: white;
         }
-
+        
         .set-selector {
             display: flex;
             gap: 10px;
             margin-top: 15px;
         }
-
+        
         .set-btn {
             flex: 1;
             padding: 10px;
@@ -372,20 +390,24 @@
             font-weight: 600;
             transition: var(--transition);
         }
-
+        
         .set-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
-
+        
+        /* 修改题目计数器样式 */
         .question-counter {
-            background: #f0f3ff;
+            background: linear-gradient(135deg, #3a86ff, #4361ee);
             padding: 5px 15px;
             border-radius: 50px;
             font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
         }
-
+        
         footer {
             text-align: center;
             margin-top: 50px;
@@ -393,7 +415,7 @@
             color: var(--gray);
             font-size: 0.9rem;
         }
-
+        
         .chapter-tag {
             background: rgba(67, 97, 238, 0.1);
             color: var(--primary);
@@ -402,7 +424,7 @@
             font-size: 0.8rem;
             margin-left: 10px;
         }
-
+        
         .wrong-question {
             background: white;
             border-radius: var(--border-radius);
@@ -411,47 +433,256 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.05);
             border-left: 3px solid var(--danger);
         }
-
+        
         .wrong-question .question-text {
             padding: 0;
             background: transparent;
             box-shadow: none;
             margin-bottom: 10px;
         }
-
+        
         .answer-info {
             padding: 10px;
             border-radius: var(--border-radius);
             margin: 10px 0;
         }
-
+        
         .user-answer {
             background: #fff5f7;
             color: var(--danger);
             border-left: 3px solid var(--danger);
         }
-
+        
         .correct-answer {
             background: #e6f7ee;
             color: #0ca678;
             border-left: 3px solid #0ca678;
+        }
+        
+        .type-indicator {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #e7f5ff;
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+        
+        /* 题目导航面板 - 优化样式 */
+        .navigation-panel {
+            max-height: 600px;
+            overflow-y: auto;
+            background: linear-gradient(145deg, #f8f9ff, #ffffff);
+            border: 1px solid #e0e7ff;
+        }
+        
+        .navigation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .question-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 45px;
+            border-radius: 8px;
+            background: #f1f3f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #e9ecef;
+        }
+        
+        .question-number:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.15);
+            border-color: var(--primary);
+        }
+        
+        .question-number.current {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.4);
+            border: none;
+            transform: scale(1.05);
+            z-index: 2;
+        }
+        
+        .question-number.answered {
+            background: #e7f5ff;
+            color: var(--primary);
+            border: 1px solid #b8d4ff;
+        }
+        
+        .question-type {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.8);
+            font-weight: bold;
+        }
+        
+        .question-number.choice .question-type {
+            background: #e1f7e3;
+            color: #0ca678;
+        }
+        
+        .question-number.trueFalse .question-type {
+            background: #fef6e6;
+            color: #f8961e;
+        }
+        
+        .question-number.fillBlank .question-type {
+            background: #e6f0ff;
+            color: #4361ee;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+        
+        .legend-current {
+            background: var(--primary);
+        }
+        
+        .legend-answered {
+            background: #b8d4ff;
+        }
+        
+        .legend-unanswered {
+            background: #f1f3f9;
+        }
+        
+        .section-divider {
+            height: 1px;
+            background: #e9ecef;
+            margin: 20px 0;
+        }
+        
+        .nav-description {
+            background: #f0f4ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            border-left: 3px solid var(--primary);
+        }
+        
+        /* 新增状态指示器 */
+        .status-indicator {
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+        
+        .question-number.correct .status-indicator {
+            background: #38b000;
+        }
+        
+        .question-number.incorrect .status-indicator {
+            background: var(--danger);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .questions-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .questions-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        /* 自动跳转提示 */
+        .auto-next-indicator {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .countdown {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            line-height: 24px;
+            text-align: center;
+            margin: 0 5px;
+        }
+        
+        .completion-message {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #38b000, #2d7d46);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(56, 176, 0, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-microchip"></i> 单片机原理与接口技术 - 在线刷题系统</h1>
-            <p class="subtitle">基于Word文档转换的题库系统，支持选择题、判断题和填空题三种题型</p>
+            <h1><i class="fas fa-microchip"></i> 单片机原理与接口技术 - 优化题库系统</h1>
+            <p class="subtitle">包含两套完整试题，每套10道选择题、10道判断题、5道填空题</p>
         </header>
-
+        
         <div class="main-content">
             <div class="stats-section">
                 <h2 class="section-title"><i class="fas fa-chart-line"></i> 学习统计</h2>
-
+                
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-value" id="totalQuestions">0</div>
+                        <div class="stat-value" id="totalQuestions">25</div>
                         <div class="stat-label">总题数</div>
                     </div>
                     <div class="stat-card">
@@ -463,7 +694,7 @@
                         <div class="stat-label">正确率</div>
                     </div>
                 </div>
-
+                
                 <div class="progress-container">
                     <div class="progress-bar">
                         <div class="progress" id="progressBar" style="width: 0%"></div>
@@ -474,94 +705,137 @@
                         <span>100%</span>
                     </div>
                 </div>
-
+                
                 <h3 class="section-title"><i class="fas fa-book"></i> 题库选择</h3>
-
+                
                 <div class="set-selector">
                     <div class="set-btn active" data-set="1">第一套试题</div>
                     <div class="set-btn" data-set="2">第二套试题</div>
                 </div>
-
+                
                 <button class="btn" style="margin-top: 25px; width: 100%;" id="wrongBtn">
                     <i class="fas fa-exclamation-circle"></i> 查看错题本
                 </button>
             </div>
-
+            
             <div class="quiz-section">
                 <div class="tabs">
                     <div class="tab active" data-tab="quiz">答题模式</div>
                     <div class="tab" data-tab="review">错题本</div>
                 </div>
-
+                
                 <div class="quiz-content active" id="quizTab">
                     <div class="question-container">
                         <div class="question-header">
-                            <span><span id="currentType">选择题</span> <span class="chapter-tag" id="chapterTag">第1章第1节</span></span>
-                            <span class="question-counter">第 <span id="currentQuestion">1</span> 题 / 共 <span id="totalQuestionsDisplay">10</span> 题</span>
+                            <span>
+                                <span class="type-indicator" id="typeIndicator">选择题</span>
+                                <span class="chapter-tag" id="chapterTag">第1章第1节</span>
+                            </span>
+                            <span class="question-counter">第 <span id="currentQuestion">1</span> 题 / 共 <span id="totalQuestionsDisplay">25</span> 题</span>
                         </div>
                         <div class="question-text" id="questionText">
                             在计算机内十进制数10的压缩BCD码表示方式是__________。
                         </div>
-
+                        
                         <div class="options" id="optionsContainer">
-                            <label class="option">
-                                <input type="radio" name="answer">
-                                <span class="checkmark"></span>
-                                A. 1110 1110
-                            </label>
-                            <label class="option">
-                                <input type="radio" name="answer">
-                                <span class="checkmark"></span>
-                                B. 1001 0010
-                            </label>
-                            <label class="option">
-                                <input type="radio" name="answer">
-                                <span class="checkmark"></span>
-                                C. 1110 1101
-                            </label>
-                            <label class="option">
-                                <input type="radio" name="answer">
-                                <span class="checkmark"></span>
-                                D. 0001 0000
-                            </label>
+                            <!-- 动态生成选项 -->
                         </div>
-
+                        
                         <div class="explanation" id="explanation">
                             <strong>答案解析：</strong> 压缩BCD码用4位二进制数表示一个十进制数位，十进制数10的压缩BCD码应为0001 0000，对应十六进制0x10。
                         </div>
+                        
+                        <!-- 自动跳转提示 -->
+                        <div class="auto-next-indicator" id="autoNextIndicator" style="display: none;">
+                            即将自动跳转到下一题：<span class="countdown" id="countdown">2</span>秒
+                        </div>
+                        
+                        <!-- 完成提示 -->
+                        <div class="completion-message" id="completionMessage" style="display: none;">
+                            <i class="fas fa-check-circle"></i> 恭喜！您已完成所有题目
+                        </div>
                     </div>
-
+                    
                     <div class="navigation">
                         <button class="btn btn-outline" id="prevBtn"><i class="fas fa-arrow-left"></i> 上一题</button>
                         <button class="btn" id="submitBtn">提交答案</button>
                         <button class="btn" id="nextBtn">下一题 <i class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
-
+                
                 <div class="quiz-content" id="reviewTab">
                     <h3><i class="fas fa-exclamation-circle"></i> 错题本</h3>
                     <p>以下是你答错的题目，建议重点复习：</p>
-
+                    
                     <div class="wrong-questions" id="wrongQuestions">
                         <div class="wrong-question">
                             <p>恭喜！目前没有错题记录。</p>
                         </div>
                     </div>
-
+                    
                     <button class="btn" id="retryBtn" style="margin-top: 20px;">
                         <i class="fas fa-redo"></i> 重新练习错题
                     </button>
                 </div>
             </div>
+            
+            <div class="navigation-panel">
+                <div class="navigation-header">
+                    <h2 class="section-title"><i class="fas fa-map-signs"></i> 题目导航</h2>
+                    <div class="question-counter">共 <span id="totalQuestionsNav">25</span> 题</div>
+                </div>
+                
+                <div class="nav-description">
+                    <i class="fas fa-info-circle"></i> 点击题号可直接跳转，蓝色为当前题目，浅蓝色为已答题
+                </div>
+                
+                <div class="questions-grid" id="questionsGrid">
+                    <!-- 题目导航按钮将动态生成 -->
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <h3 class="section-title"><i class="fas fa-info-circle"></i> 状态说明</h3>
+                
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color legend-current"></div>
+                        <span>当前题目</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-answered"></div>
+                        <span>已答题目</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color legend-unanswered"></div>
+                        <span>未答题目</span>
+                    </div>
+                </div>
+                
+                <div class="legend" style="margin-top: 10px;">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e1f7e3;"></div>
+                        <span>选择题</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fef6e6;"></div>
+                        <span>判断题</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e6f0ff;"></div>
+                        <span>填空题</span>
+                    </div>
+                </div>
+            </div>
         </div>
-
+        
         <footer>
-            <p>单片机原理与接口技术在线刷题系统 &copy; 2023 | 基于Word文档转换 | 支持题型: 选择题, 判断题, 填空题</p>
+            <p>单片机原理与接口技术在线刷题系统 &copy; 2023 | 完整包含两套试题，每套25题</p>
         </footer>
     </div>
 
     <script>
-        // 单片机题库数据 - 基于提供的Word文档
+        // 完整的单片机题库数据 - 根据文档内容
         const questionBank = {
             set1: {
                 choice: [
@@ -569,7 +843,7 @@
                         id: 1,
                         question: "在计算机内十进制数10的压缩BCD码表示方式是__________。",
                         options: ["1110 1110", "1001 0010", "1110 1101", "0001 0000"],
-                        answer: 3, // D
+                        answer: 3,
                         explanation: "压缩BCD码用4位二进制数表示一个十进制数位，十进制数10的压缩BCD码应为0001 0000，对应十六进制0x10。",
                         chapter: "第1章第1节"
                     },
@@ -577,7 +851,7 @@
                         id: 2,
                         question: "STC8A8K64S4A12 的CPU一次能处理__________位数据。",
                         options: ["4", "8", "16", "32"],
-                        answer: 1, // B
+                        answer: 1,
                         explanation: "STC8A8K64S4A12是一款8位单片机，其CPU一次能处理8位数据。",
                         chapter: "第2章第2节"
                     },
@@ -585,7 +859,7 @@
                         id: 3,
                         question: "无符号整型类型的C语言关键词是__________。",
                         options: ["unsigned char", "unsigned int", "unsigned long", "short"],
-                        answer: 1, // B
+                        answer: 1,
                         explanation: "在C语言中，无符号整型的关键词是unsigned int。",
                         chapter: "第3章第1节"
                     },
@@ -593,7 +867,7 @@
                         id: 4,
                         question: "C51语言的空类型关键词是__________。",
                         options: ["void", "extern", "interrupt", "include"],
-                        answer: 0, // A
+                        answer: 0,
                         explanation: "C51语言中，void用于表示空类型，常用于函数无返回值的情况。",
                         chapter: "第3章第1节"
                     },
@@ -601,7 +875,7 @@
                         id: 5,
                         question: "轻触开关按键软件消抖的最合理时间大约为__________。",
                         options: ["5ms", "15ms", "25ms", "50ms"],
-                        answer: 2, // C
+                        answer: 2,
                         explanation: "按键消抖的合理时间通常为20-30ms，25ms是一个常用的消抖时间。",
                         chapter: "第2章第2节"
                     },
@@ -609,7 +883,7 @@
                         id: 6,
                         question: "MCS-51单片机的 P3.3引脚的第二功能是__________。",
                         options: ["TXD", "RXD", "INT0", "INT1"],
-                        answer: 3, // D
+                        answer: 3,
                         explanation: "P3.3引脚的第二功能是INT1（外部中断1）。",
                         chapter: "第4章第2节"
                     },
@@ -617,7 +891,7 @@
                         id: 7,
                         question: "MCS-51单片机定时器的计数方式为__________。",
                         options: ["加计数", "减计数", "加减计数", "中央对齐"],
-                        answer: 0, // A
+                        answer: 0,
                         explanation: "MCS-51单片机的定时器采用加计数方式。",
                         chapter: "第4章第3节"
                     },
@@ -625,7 +899,7 @@
                         id: 8,
                         question: "异步串口通信协议中起始位有__________位。",
                         options: ["4", "3", "2", "1"],
-                        answer: 3, // D
+                        answer: 3,
                         explanation: "异步串口通信中，起始位固定为1位。",
                         chapter: "第4章第4节"
                     },
@@ -633,7 +907,7 @@
                         id: 9,
                         question: "MCS-51单片机可做8位数据总线的IO口是__________。",
                         options: ["P0", "P1", "P2", "P3"],
-                        answer: 0, // A
+                        answer: 0,
                         explanation: "P0口可用作8位数据总线。",
                         chapter: "第2章第2节"
                     },
@@ -641,76 +915,118 @@
                         id: 10,
                         question: "MCS-51并行地址总线是__________位。",
                         options: ["4", "8", "16", "32"],
-                        answer: 2, // C
+                        answer: 2,
                         explanation: "MCS-51单片机有16位并行地址总线。",
                         chapter: "第4章第1节"
                     }
                 ],
                 trueFalse: [
                     {
-                        id: 1,
+                        id: 11,
                         question: "计算机中负数的原码、反码、补码表示方式相同。",
                         answer: false,
                         explanation: "负数的原码、反码和补码表示方式不同：原码符号位为1，反码是原码除符号位外取反，补码是反码加1。",
                         chapter: "第1章第1节"
                     },
                     {
-                        id: 2,
+                        id: 12,
                         question: "MCS-51单片机只有程序存储器支持片外寻址。",
                         answer: false,
                         explanation: "MCS-51单片机的数据存储器和程序存储器都支持片外寻址。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 3,
+                        id: 13,
                         question: "MCS-51单片机每组I/O口的数量都是16个引脚。",
                         answer: false,
                         explanation: "MCS-51单片机有4组I/O口（P0-P3），每组8个引脚，共32个I/O引脚。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 4,
+                        id: 14,
                         question: "C语言中枚举是常量的集合。",
                         answer: true,
                         explanation: "枚举类型是由一组命名常量组成的集合。",
                         chapter: "第3章第1节"
                     },
                     {
-                        id: 5,
+                        id: 15,
                         question: "将符号数字化的数叫机器数，是数字在计算机中的二进制表示形式。",
                         answer: true,
                         explanation: "机器数是数字在计算机中的二进制表示形式，包括符号位。",
                         chapter: "第1章第1节"
                     },
                     {
-                        id: 6,
+                        id: 16,
                         question: "MCS-51单片机的串口只支持半双工。",
                         answer: false,
                         explanation: "MCS-51单片机的串口支持全双工通信。",
                         chapter: "第4章第4节"
+                    },
+                    {
+                        id: 17,
+                        question: "C51编译器中void exti1(u8 *str) interrupt 2程序写法是正确的。",
+                        answer: false,
+                        explanation: "中断函数不能有参数，正确的写法应该是：void exti1(void) interrupt 2",
+                        chapter: "第3章第5节"
+                    },
+                    {
+                        id: 18,
+                        question: "标志寄存器PSW中的AC为半进位/借位标志位，低半字节加减运算向高半字节有进位或借位时由硬件自动置位。",
+                        answer: true,
+                        explanation: "AC标志位用于BCD码运算调整，当低4位向高4位有进位或借位时置1。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 19,
+                        question: "MCS-51单片机中SP长度为8位。",
+                        answer: true,
+                        explanation: "堆栈指针SP是一个8位特殊功能寄存器。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 20,
+                        question: "STC8A8K64S4A12单片机全局中断控制位在IE寄存器中。",
+                        answer: true,
+                        explanation: "IE寄存器包含全局中断控制位EA。",
+                        chapter: "第4章第2节"
                     }
                 ],
                 fillBlank: [
                     {
-                        id: 1,
+                        id: 21,
                         question: "MSC-51单片机存储器分为 [ ] 、 [ ] 两种。",
                         answer: ["片内", "片外"],
                         explanation: "MSC-51单片机存储器分为片内存储器和片外存储器两种。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 2,
+                        id: 22,
                         question: "堆栈的工作方式为 [ ] 生长型和 [ ] 生长型。",
                         answer: ["向上", "向下"],
                         explanation: "堆栈的工作方式分为向上生长型和向下生长型。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 3,
+                        id: 23,
                         question: "C51中位变量定义的关键词有 [ ] 、 [ ] 。",
                         answer: ["bit", "sbit"],
                         explanation: "C51中bit用于定义普通位变量，sbit用于定义特殊功能寄存器中的位。",
                         chapter: "第3章第2节"
+                    },
+                    {
+                        id: 24,
+                        question: "串口通信按信息传送的方向分为单工、 [ ] 、 [ ] 通信。",
+                        answer: ["半双工", "全双工"],
+                        explanation: "串口通信分为单工、半双工和全双工三种方式。",
+                        chapter: "第4章第4节"
+                    },
+                    {
+                        id: 25,
+                        question: "MSC-51单片机的PC是 [ ] 位寄存器，TLx是 [ ] 寄存器。",
+                        answer: ["16", "低字节计数"],
+                        explanation: "PC是16位程序计数器，TLx是定时器低字节计数寄存器。",
+                        chapter: "第2章第2节、第4章第3节"
                     }
                 ]
             },
@@ -720,7 +1036,7 @@
                         id: 1,
                         question: "在计算机内十进制数16的压缩BCD码表示方式是__________。",
                         options: ["1110 1110", "1001 0010", "1110 1101", "0001 0110"],
-                        answer: 3, // D
+                        answer: 3,
                         explanation: "十进制数16的压缩BCD码应为0001 0110，对应十六进制0x16。",
                         chapter: "第1章第1节"
                     },
@@ -728,7 +1044,7 @@
                         id: 2,
                         question: "STC8A8K64S4A12 的字长是__________位。",
                         options: ["4", "8", "16", "32"],
-                        answer: 1, // B
+                        answer: 1,
                         explanation: "STC8A8K64S4A12是8位单片机。",
                         chapter: "第3章第1节"
                     },
@@ -736,7 +1052,7 @@
                         id: 3,
                         question: "无符号长整型类型的C语言关键词是__________。",
                         options: ["unsigned char", "unsigned int", "unsigned long", "short"],
-                        answer: 2, // C
+                        answer: 2,
                         explanation: "无符号长整型的关键词是unsigned long。",
                         chapter: "第3章第1节"
                     },
@@ -744,7 +1060,7 @@
                         id: 4,
                         question: "下列不属于MCS-51单片机CPU的部件的是__________。",
                         options: ["IP", "ACC", "B寄存器", "PSW"],
-                        answer: 0, // A
+                        answer: 0,
                         explanation: "IP（中断优先级寄存器）不属于CPU的部件，而是特殊功能寄存器。",
                         chapter: "第2章第2节"
                     },
@@ -752,48 +1068,158 @@
                         id: 5,
                         question: "下列不属于机器数在计算机中表示方法的是__________。",
                         options: ["原码", "反码", "8421码", "补码"],
-                        answer: 2, // C
+                        answer: 2,
                         explanation: "8421码是一种BCD编码方式，不是机器数的表示方法。",
                         chapter: "第1章第1节"
+                    },
+                    {
+                        id: 6,
+                        question: "MCS-51单片机的 P3.0引脚的第二功能是__________。",
+                        options: ["TXD", "RXD", "INT0", "INT1"],
+                        answer: 1,
+                        explanation: "P3.0引脚的第二功能是RXD（串行数据接收）。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 7,
+                        question: "MCS-51单片机定时器最大计数长度为__________bit。",
+                        options: ["16", "24", "32", "64"],
+                        answer: 0,
+                        explanation: "MCS-51单片机的定时器最大计数长度为16位。",
+                        chapter: "第4章第3节"
+                    },
+                    {
+                        id: 8,
+                        question: "MCS-51单片机串行口有__________工作方式。",
+                        options: ["4", "3", "2", "1"],
+                        answer: 0,
+                        explanation: "MCS-51串行口有4种工作方式。",
+                        chapter: "第4章第4节"
+                    },
+                    {
+                        id: 9,
+                        question: "MCS-51单片机可做高8位地址总线的IO口是__________。",
+                        options: ["P0", "P1", "P2", "P3"],
+                        answer: 2,
+                        explanation: "P2口可用作高8位地址总线。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 10,
+                        question: "MCS-51外部时钟源频率通常是__________hz。",
+                        options: ["32.768K", "4M", "8M", "12M"],
+                        answer: 3,
+                        explanation: "MCS-51单片机通常使用11.0592MHz或12MHz的外部晶振。",
+                        chapter: "第2章第3节"
                     }
                 ],
                 trueFalse: [
                     {
-                        id: 1,
+                        id: 11,
                         question: "所有的机械开关抖动的时间均在10~20ms之间。",
                         answer: false,
                         explanation: "开关抖动时间因开关类型而异，通常在5-20ms之间。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 2,
+                        id: 12,
                         question: "MCS-51单片机数据存储器位寻址方式只支持片内寻址。",
                         answer: true,
                         explanation: "位寻址方式只支持片内数据存储器的特定区域。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 3,
+                        id: 13,
                         question: "随课实验用的STC8A8K64S4A12单片机共有64个IO。",
                         answer: false,
                         explanation: "STC8A8K64S4A12单片机有48个I/O引脚。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 14,
+                        question: "unsigned char buff [5]是向内存中申请了5个字节缓存。",
+                        answer: true,
+                        explanation: "unsigned char类型数组，每个元素占1字节，5个元素共5字节。",
+                        chapter: "第3章第1节"
+                    },
+                    {
+                        id: 15,
+                        question: "多字节存储的方式分为大端模式和小端模式。",
+                        answer: true,
+                        explanation: "多字节数据的存储方式分为大端模式和小端模式。",
+                        chapter: "第3章第4节"
+                    },
+                    {
+                        id: 16,
+                        question: "STC8A8K64S4A12单片机的定时器工作方式0是13位计数长度。",
+                        answer: true,
+                        explanation: "工作方式0是13位定时器/计数器模式。",
+                        chapter: "第4章第3节"
+                    },
+                    {
+                        id: 17,
+                        question: "C51编译器中bit time0_init(void) interrupt 0程序写法是正确的。",
+                        answer: false,
+                        explanation: "中断函数不能有返回值，应该使用void类型。",
+                        chapter: "第3章第5节"
+                    },
+                    {
+                        id: 18,
+                        question: "标志寄存器PSW中的P为奇偶标志位，ACC=0x38时，P=1。",
+                        answer: true,
+                        explanation: "ACC=0x38(00111000)有3个1，是奇数个1，P=1。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 19,
+                        question: "堆栈的工作方式有向上生长型和向下生长型。",
+                        answer: true,
+                        explanation: "堆栈的工作方式分为向上生长型和向下生长型。",
+                        chapter: "第2章第2节"
+                    },
+                    {
+                        id: 20,
+                        question: "STC8A8K64S4A12的IO口有4种工作模式。",
+                        answer: true,
+                        explanation: "STC8A8K64S4A12的I/O口有4种工作模式：准双向、推挽、高阻输入和开漏。",
                         chapter: "第2章第2节"
                     }
                 ],
                 fillBlank: [
                     {
-                        id: 1,
+                        id: 21,
                         question: "MSC-51单片机堆栈有 [ ] 、 [ ] 两种操作。",
                         answer: ["入栈", "出栈"],
                         explanation: "堆栈的基本操作是入栈(PUSH)和出栈(POP)。",
                         chapter: "第2章第2节"
                     },
                     {
-                        id: 2,
+                        id: 22,
                         question: "C51的数组是 [ ] 的变量集合，结构体是 [ ] 集合。",
                         answer: ["相同类型", "不同类型"],
                         explanation: "数组是相同类型变量的集合，结构体是不同类型变量的集合。",
                         chapter: "第3章第1节"
+                    },
+                    {
+                        id: 23,
+                        question: "将符号数字化的数叫 [ ] ，是数字在计算机中的 [ ] 表示形式。",
+                        answer: ["机器数", "二进制"],
+                        explanation: "机器数是数字在计算机中的二进制表示形式。",
+                        chapter: "第1章第1节"
+                    },
+                    {
+                        id: 24,
+                        question: "串口通信按信息传送的方向分为 半双工 、 [ ] 、 [ ] 通信。",
+                        answer: ["单工", "全双工"],
+                        explanation: "串口通信分为单工、半双工和全双工三种方式。",
+                        chapter: "第4章第4节"
+                    },
+                    {
+                        id: 25,
+                        question: "MSC-51单片机的IE是 [ ] 寄存器，IP有 [ ] 级优先级。",
+                        answer: ["中断", "2"],
+                        explanation: "IE是中断允许寄存器，IP提供两级中断优先级控制。",
+                        chapter: "第4章第2节"
                     }
                 ]
             }
@@ -802,11 +1228,13 @@
         // 当前应用状态
         const state = {
             currentSet: 'set1',
-            currentType: 'choice',
             currentQuestionIndex: 0,
             userAnswers: {},
             showAnswer: false,
-            wrongQuestions: []
+            wrongQuestions: [],
+            currentQuestions: [],
+            autoNextTimer: null,
+            countdownInterval: null
         };
 
         // DOM元素
@@ -815,7 +1243,7 @@
             answered: document.getElementById('answered'),
             correctRate: document.getElementById('correctRate'),
             progressBar: document.getElementById('progressBar'),
-            currentType: document.getElementById('currentType'),
+            typeIndicator: document.getElementById('typeIndicator'),
             chapterTag: document.getElementById('chapterTag'),
             currentQuestion: document.getElementById('currentQuestion'),
             totalQuestionsDisplay: document.getElementById('totalQuestionsDisplay'),
@@ -831,19 +1259,98 @@
             retryBtn: document.getElementById('retryBtn'),
             wrongBtn: document.getElementById('wrongBtn'),
             setButtons: document.querySelectorAll('.set-btn'),
-            tabs: document.querySelectorAll('.tab')
+            tabs: document.querySelectorAll('.tab'),
+            questionsGrid: document.getElementById('questionsGrid'),
+            totalQuestionsNav: document.getElementById('totalQuestionsNav'),
+            autoNextIndicator: document.getElementById('autoNextIndicator'),
+            countdown: document.getElementById('countdown'),
+            completionMessage: document.getElementById('completionMessage')
         };
 
         // 初始化应用
         function initApp() {
+            // 合并题目
+            mergeQuestions();
+            
             // 显示第一题
             displayQuestion();
-
+            
             // 更新统计
             updateStats();
-
+            
+            // 生成题目导航
+            generateQuestionNavigation();
+            
             // 事件监听
             setupEventListeners();
+        }
+
+        // 合并题目
+        function mergeQuestions() {
+            const set = questionBank[state.currentSet];
+            state.currentQuestions = [
+                ...set.choice.map(q => ({...q, type: 'choice'})),
+                ...set.trueFalse.map(q => ({...q, type: 'trueFalse'})),
+                ...set.fillBlank.map(q => ({...q, type: 'fillBlank'}))
+            ];
+        }
+
+        // 生成题目导航
+        function generateQuestionNavigation() {
+            elements.questionsGrid.innerHTML = '';
+            elements.totalQuestionsNav.textContent = state.currentQuestions.length;
+            
+            state.currentQuestions.forEach((question, index) => {
+                const questionElement = document.createElement('div');
+                questionElement.className = 'question-number';
+                questionElement.textContent = index + 1;
+                
+                // 设置题目类型
+                questionElement.classList.add(question.type === 'choice' ? 'choice' : 
+                                            question.type === 'trueFalse' ? 'trueFalse' : 'fillBlank');
+                
+                // 添加类型标识
+                const typeSpan = document.createElement('span');
+                typeSpan.className = 'question-type';
+                typeSpan.textContent = question.type === 'choice' ? '选' : 
+                                     question.type === 'trueFalse' ? '判' : '填';
+                questionElement.appendChild(typeSpan);
+                
+                // 设置当前题目状态
+                if (index === state.currentQuestionIndex) {
+                    questionElement.classList.add('current');
+                }
+                
+                // 设置答题状态
+                const key = `${state.currentSet}-${index}`;
+                if (state.userAnswers[key] !== undefined) {
+                    questionElement.classList.add('answered');
+                    
+                    // 添加答题正确/错误状态
+                    if (state.showAnswer) {
+                        if (isAnswerCorrect(question, state.userAnswers[key])) {
+                            questionElement.classList.add('correct');
+                        } else {
+                            questionElement.classList.add('incorrect');
+                        }
+                    }
+                }
+                
+                // 添加状态指示器
+                const statusIndicator = document.createElement('div');
+                statusIndicator.className = 'status-indicator';
+                questionElement.appendChild(statusIndicator);
+                
+                // 添加点击事件
+                questionElement.addEventListener('click', () => {
+                    state.currentQuestionIndex = index;
+                    state.showAnswer = false;
+                    displayQuestion();
+                    generateQuestionNavigation(); // 重新生成导航以更新当前题目状态
+                });
+                
+                elements.questionsGrid.appendChild(questionElement);
+            });
         }
 
         // 设置事件监听
@@ -851,42 +1358,46 @@
             // 上一题/下一题按钮
             elements.prevBtn.addEventListener('click', goToPrevQuestion);
             elements.nextBtn.addEventListener('click', goToNextQuestion);
-
+            
             // 提交答案按钮
             elements.submitBtn.addEventListener('click', submitAnswer);
-
+            
             // 题库选择
             elements.setButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
                     elements.setButtons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-
+                    
                     state.currentSet = btn.dataset.set === '1' ? 'set1' : 'set2';
                     state.currentQuestionIndex = 0;
                     state.showAnswer = false;
+                    mergeQuestions();
                     displayQuestion();
                     updateStats();
+                    generateQuestionNavigation();
                 });
             });
-
+            
             // 标签页切换
             elements.tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    
                     elements.tabs.forEach(t => t.classList.remove('active'));
                     elements.quizTab.classList.remove('active');
                     elements.reviewTab.classList.remove('active');
-
+                    
                     tab.classList.add('active');
-
-                    if (tab.dataset.tab === 'quiz') {
+                    
+                    if (tabName === 'quiz') {
                         elements.quizTab.classList.add('active');
-                    } else {
+                    } else if (tabName === 'review') {
                         elements.reviewTab.classList.add('active');
                         displayWrongQuestions();
                     }
                 });
             });
-
+            
             // 错题本按钮
             elements.wrongBtn.addEventListener('click', () => {
                 elements.tabs.forEach(t => t.classList.remove('active'));
@@ -895,66 +1406,73 @@
                 elements.reviewTab.classList.add('active');
                 displayWrongQuestions();
             });
-
+            
             // 重做错题
             elements.retryBtn.addEventListener('click', retryWrongQuestions);
         }
 
         // 获取当前题目
         function getCurrentQuestion() {
-            const questions = questionBank[state.currentSet][state.currentType];
-            return questions[state.currentQuestionIndex];
+            return state.currentQuestions[state.currentQuestionIndex];
         }
 
         // 获取当前题库题目总数
         function getTotalQuestions() {
-            const set = questionBank[state.currentSet];
-            return set.choice.length + set.trueFalse.length + set.fillBlank.length;
-        }
-
-        // 获取当前类型题目总数
-        function getCurrentTypeQuestionsLength() {
-            return questionBank[state.currentSet][state.currentType].length;
+            return state.currentQuestions.length;
         }
 
         // 显示题目
         function displayQuestion() {
             const question = getCurrentQuestion();
-            const totalInType = getCurrentTypeQuestionsLength();
-
+            const total = getTotalQuestions();
+            
             // 更新题号显示
             elements.currentQuestion.textContent = state.currentQuestionIndex + 1;
-            elements.totalQuestionsDisplay.textContent = totalInType;
-
+            elements.totalQuestionsDisplay.textContent = total;
+            
             // 设置题型和章节
             let typeText = "";
-            switch (state.currentType) {
+            switch (question.type) {
                 case 'choice': typeText = "选择题"; break;
                 case 'trueFalse': typeText = "判断题"; break;
                 case 'fillBlank': typeText = "填空题"; break;
             }
-            elements.currentType.textContent = typeText;
+            elements.typeIndicator.textContent = typeText;
             elements.chapterTag.textContent = question.chapter;
-
+            
             // 设置问题文本
             elements.questionText.textContent = question.question;
-
+            
             // 清空选项容器
             elements.optionsContainer.innerHTML = '';
-
+            
+            // 隐藏自动跳转提示和完成提示
+            elements.autoNextIndicator.style.display = 'none';
+            elements.completionMessage.style.display = 'none';
+            
+            // 清除之前的定时器
+            if (state.autoNextTimer) {
+                clearTimeout(state.autoNextTimer);
+                state.autoNextTimer = null;
+            }
+            if (state.countdownInterval) {
+                clearInterval(state.countdownInterval);
+                state.countdownInterval = null;
+            }
+            
             // 根据题型创建选项
-            if (state.currentType === 'choice') {
+            if (question.type === 'choice') {
                 question.options.forEach((option, i) => {
                     const optionElement = document.createElement('label');
                     optionElement.className = 'option';
-
+                    
                     // 如果已显示答案且此选项是正确答案
                     if (state.showAnswer && i === question.answer) {
                         optionElement.classList.add('correct');
                     }
-
+                    
                     // 如果用户选择了此选项
-                    const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                    const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                     const userAnswer = state.userAnswers[key];
                     if (userAnswer === i) {
                         optionElement.classList.add('selected');
@@ -963,37 +1481,40 @@
                             optionElement.classList.add('incorrect');
                         }
                     }
-
+                    
                     optionElement.innerHTML = `
                         <input type="radio" name="answer" value="${i}">
                         <span class="checkmark"></span>
                         ${String.fromCharCode(65 + i)}. ${option}
                     `;
-
+                    
                     // 添加选择事件
                     optionElement.querySelector('input').addEventListener('change', () => {
                         if (!state.showAnswer) {
-                            const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                            const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                             state.userAnswers[key] = i;
                             document.querySelectorAll('.option').forEach(opt => {
                                 opt.classList.remove('selected');
                             });
                             optionElement.classList.add('selected');
                             elements.submitBtn.disabled = false;
+                            
+                            // 更新题目导航状态
+                            generateQuestionNavigation();
                         }
                     });
-
+                    
                     elements.optionsContainer.appendChild(optionElement);
                 });
-            }
-            else if (state.currentType === 'trueFalse') {
+            } 
+            else if (question.type === 'trueFalse') {
                 const trueOption = document.createElement('label');
                 trueOption.className = 'option';
                 if (state.showAnswer && question.answer === true) {
                     trueOption.classList.add('correct');
                 }
-
-                const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                
+                const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                 const userAnswer = state.userAnswers[key];
                 if (userAnswer === true) {
                     trueOption.classList.add('selected');
@@ -1001,7 +1522,7 @@
                         trueOption.classList.add('incorrect');
                     }
                 }
-
+                
                 trueOption.innerHTML = `
                     <input type="radio" name="answer" value="true">
                     <span class="checkmark"></span>
@@ -1009,16 +1530,19 @@
                 `;
                 trueOption.querySelector('input').addEventListener('change', () => {
                     if (!state.showAnswer) {
-                        const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                        const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                         state.userAnswers[key] = true;
                         document.querySelectorAll('.option').forEach(opt => {
                             opt.classList.remove('selected');
                         });
                         trueOption.classList.add('selected');
                         elements.submitBtn.disabled = false;
+                        
+                        // 更新题目导航状态
+                        generateQuestionNavigation();
                     }
                 });
-
+                
                 const falseOption = document.createElement('label');
                 falseOption.className = 'option';
                 if (state.showAnswer && question.answer === false) {
@@ -1037,51 +1561,57 @@
                 `;
                 falseOption.querySelector('input').addEventListener('change', () => {
                     if (!state.showAnswer) {
-                        const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                        const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                         state.userAnswers[key] = false;
                         document.querySelectorAll('.option').forEach(opt => {
                             opt.classList.remove('selected');
                         });
                         falseOption.classList.add('selected');
                         elements.submitBtn.disabled = false;
+                        
+                        // 更新题目导航状态
+                        generateQuestionNavigation();
                     }
                 });
-
+                
                 elements.optionsContainer.appendChild(trueOption);
                 elements.optionsContainer.appendChild(falseOption);
             }
-            else if (state.currentType === 'fillBlank') {
+            else if (question.type === 'fillBlank') {
                 const inputContainer = document.createElement('div');
                 inputContainer.className = 'fill-blank-container';
-
-                const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                
+                const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                 const userAnswers = state.userAnswers[key] || [];
-
+                
                 question.answer.forEach((_, i) => {
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.className = 'blank-input';
                     input.placeholder = `填空 ${i + 1}`;
                     input.disabled = state.showAnswer;
-
+                    
                     if (userAnswers[i] !== undefined) {
                         input.value = userAnswers[i];
                     }
-
+                    
                     input.addEventListener('input', () => {
                         if (!state.userAnswers[key]) {
                             state.userAnswers[key] = [];
                         }
                         state.userAnswers[key][i] = input.value;
                         elements.submitBtn.disabled = false;
+                        
+                        // 更新题目导航状态
+                        generateQuestionNavigation();
                     });
-
+                    
                     inputContainer.appendChild(input);
                 });
-
+                
                 elements.optionsContainer.appendChild(inputContainer);
             }
-
+            
             // 显示/隐藏答案解析
             elements.explanation.innerHTML = `<strong>答案解析：</strong> ${question.explanation}`;
             if (state.showAnswer) {
@@ -1089,23 +1619,23 @@
             } else {
                 elements.explanation.classList.remove('show');
             }
-
+            
             // 更新按钮状态
             updateButtonStates();
         }
 
         // 更新按钮状态
         function updateButtonStates() {
-            const totalInType = getCurrentTypeQuestionsLength();
-
+            const total = getTotalQuestions();
+            
             // 上一题按钮
             elements.prevBtn.disabled = state.currentQuestionIndex === 0;
-
+            
             // 下一题按钮
-            elements.nextBtn.disabled = state.currentQuestionIndex === totalInType - 1;
-
+            elements.nextBtn.disabled = state.currentQuestionIndex === total - 1;
+            
             // 提交按钮
-            const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+            const key = `${state.currentSet}-${state.currentQuestionIndex}`;
             const hasAnswer = state.userAnswers[key] !== undefined;
             elements.submitBtn.disabled = !hasAnswer && !state.showAnswer;
             elements.submitBtn.textContent = state.showAnswer ? '下一题' : '提交答案';
@@ -1116,31 +1646,40 @@
             if (!state.showAnswer) {
                 // 显示答案和解析
                 state.showAnswer = true;
-
+                
                 // 检查答案是否正确
                 const question = getCurrentQuestion();
-                const key = `${state.currentSet}-${state.currentType}-${state.currentQuestionIndex}`;
+                const key = `${state.currentSet}-${state.currentQuestionIndex}`;
                 const userAnswer = state.userAnswers[key];
-
+                
                 // 添加到错题本（如果答错）
                 if (!isAnswerCorrect(question, userAnswer)) {
                     state.wrongQuestions.push({
-                        set: state.currentSet,
-                        type: state.currentType,
-                        index: state.currentQuestionIndex,
                         question: question,
                         userAnswer: userAnswer
                     });
                 }
-
+                
                 // 重新显示当前题目（以显示正确/错误状态）
                 displayQuestion();
-
+                
                 // 更新统计信息
                 updateStats();
-
+                
+                // 更新题目导航
+                generateQuestionNavigation();
+                
                 // 更新按钮文本
                 elements.submitBtn.textContent = "下一题";
+                
+                // 如果不是最后一题，设置自动跳转
+                const total = getTotalQuestions();
+                if (state.currentQuestionIndex < total - 1) {
+                    startAutoNextCountdown();
+                } else {
+                    // 显示完成提示
+                    elements.completionMessage.style.display = 'block';
+                }
             } else {
                 // 转到下一题
                 state.showAnswer = false;
@@ -1148,15 +1687,44 @@
             }
         }
 
+        // 开始自动跳转倒计时
+        function startAutoNextCountdown() {
+            // 显示倒计时提示
+            elements.autoNextIndicator.style.display = 'block';
+            
+            let seconds = 2;
+            elements.countdown.textContent = seconds;
+            
+            // 清除之前的倒计时
+            if (state.countdownInterval) {
+                clearInterval(state.countdownInterval);
+            }
+            
+            // 设置倒计时
+            state.countdownInterval = setInterval(() => {
+                seconds--;
+                elements.countdown.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(state.countdownInterval);
+                    state.countdownInterval = null;
+                    
+                    // 自动跳转到下一题
+                    state.showAnswer = false;
+                    goToNextQuestion();
+                }
+            }, 1000);
+        }
+
         // 检查答案是否正确
         function isAnswerCorrect(question, userAnswer) {
-            if (state.currentType === 'choice' || state.currentType === 'trueFalse') {
-                return userAnswer === question.answer;
-            } else if (state.currentType === 'fillBlank') {
+            if (question.type === 'choice' || question.type === 'trueFalse') {
+                return JSON.stringify(userAnswer) === JSON.stringify(question.answer);
+            } else if (question.type === 'fillBlank') {
                 if (!userAnswer || userAnswer.length !== question.answer.length) {
                     return false;
                 }
-                return userAnswer.every((ans, i) =>
+                return userAnswer.every((ans, i) => 
                     ans.trim().toLowerCase() === question.answer[i].toLowerCase()
                 );
             }
@@ -1169,16 +1737,18 @@
                 state.showAnswer = false;
                 state.currentQuestionIndex--;
                 displayQuestion();
+                generateQuestionNavigation();
             }
         }
 
         // 下一题
         function goToNextQuestion() {
-            const totalInType = getCurrentTypeQuestionsLength();
-            if (state.currentQuestionIndex < totalInType - 1) {
+            const total = getTotalQuestions();
+            if (state.currentQuestionIndex < total - 1) {
                 state.showAnswer = false;
                 state.currentQuestionIndex++;
                 displayQuestion();
+                generateQuestionNavigation();
             }
         }
 
@@ -1187,25 +1757,25 @@
             // 计算总题数
             const total = getTotalQuestions();
             elements.totalQuestions.textContent = total;
-
+            
             // 计算已答题数
             const answeredCount = Object.keys(state.userAnswers).length;
             elements.answered.textContent = answeredCount;
-
+            
             // 计算正确率
             const correctCount = Object.keys(state.userAnswers).reduce((count, key) => {
-                const [set, type, index] = key.split('-');
-                const question = questionBank[set][type][parseInt(index)];
-
+                const index = key.split('-')[1];
+                const question = state.currentQuestions[index];
+                
                 if (isAnswerCorrect(question, state.userAnswers[key])) {
                     return count + 1;
                 }
                 return count;
             }, 0);
-
+            
             const correctRate = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
             elements.correctRate.textContent = `${correctRate}%`;
-
+            
             // 更新进度条
             const progress = (answeredCount / total) * 100;
             elements.progressBar.style.width = `${progress}%`;
@@ -1214,37 +1784,46 @@
         // 显示错题
         function displayWrongQuestions() {
             elements.wrongQuestions.innerHTML = '';
-
+            
             if (state.wrongQuestions.length === 0) {
                 elements.wrongQuestions.innerHTML = '<div class="wrong-question"><p>恭喜！目前没有错题记录。</p></div>';
                 return;
             }
-
+            
             state.wrongQuestions.forEach((wrong, index) => {
                 const wrongElement = document.createElement('div');
                 wrongElement.className = 'wrong-question';
-
+                
                 const question = wrong.question;
-
+                
                 let questionText = question.question;
                 let answerText = '';
                 let userAnswerText = '';
-
-                if (wrong.type === 'choice') {
+                
+                if (question.type === 'choice') {
                     answerText = `正确答案: ${String.fromCharCode(65 + question.answer)}. ${question.options[question.answer]}`;
                     userAnswerText = `你的答案: ${String.fromCharCode(65 + wrong.userAnswer)}. ${question.options[wrong.userAnswer]}`;
-                } else if (wrong.type === 'trueFalse') {
+                } else if (question.type === 'trueFalse') {
                     answerText = `正确答案: ${question.answer ? '正确' : '错误'}`;
                     userAnswerText = `你的答案: ${wrong.userAnswer ? '正确' : '错误'}`;
-                } else if (wrong.type === 'fillBlank') {
+                } else if (question.type === 'fillBlank') {
                     answerText = `正确答案: ${question.answer.join(', ')}`;
                     userAnswerText = `你的答案: ${wrong.userAnswer.join(', ')}`;
                 }
-
+                
+                let typeIndicator = '';
+                switch (question.type) {
+                    case 'choice': typeIndicator = "选择题"; break;
+                    case 'trueFalse': typeIndicator = "判断题"; break;
+                    case 'fillBlank': typeIndicator = "填空题"; break;
+                }
+                
                 wrongElement.innerHTML = `
                     <div class="question-text">
-                        <strong>题目 ${index + 1}:</strong> ${questionText}
-                        <div class="chapter-tag">${question.chapter}</div>
+                        <strong>题目 ${index + 1}:</strong> 
+                        <span class="type-indicator">${typeIndicator}</span>
+                        <span class="chapter-tag">${question.chapter}</span>
+                        <div style="margin-top: 10px;">${questionText}</div>
                     </div>
                     <div class="answer-info user-answer">
                         ${userAnswerText}
@@ -1256,7 +1835,7 @@
                         <strong>答案解析：</strong> ${question.explanation}
                     </div>
                 `;
-
+                
                 elements.wrongQuestions.appendChild(wrongElement);
             });
         }
@@ -1265,16 +1844,17 @@
         function retryWrongQuestions() {
             // 清空错题记录
             state.wrongQuestions = [];
-
+            
             // 切换到答题标签
             elements.tabs.forEach(t => t.classList.remove('active'));
             document.querySelector('.tab[data-tab="quiz"]').classList.add('active');
             elements.quizTab.classList.add('active');
             elements.reviewTab.classList.remove('active');
-
+            
             // 重置当前题目索引
             state.currentQuestionIndex = 0;
             displayQuestion();
+            generateQuestionNavigation();
         }
 
         // 初始化应用
